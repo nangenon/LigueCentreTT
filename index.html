@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+  <head>
+    <title>La chaine youtube de la région centre</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css"></link>
+    <link rel="stylesheet" href="css/bootstrap-responsive.min.css"></link>
+  </head>
+  <body>
+    <div class="conteiner-fluid">    
+	<div id="container" class="row-fluid">    </div>
+    </div>
+
+    <script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+    <script>
+	$(document).ready(function(){
+	    $.ajax( {
+        	type: "GET",
+                url: "http://gdata.youtube.com/feeds/users/Pingcentre1/uploads?alt=json&start-index=1&amp;max-results=-1",
+	        dataType: "JSON",
+    	        success: function(data) { 
+			var entries = data.feed.entry;
+			 for (i=0 ; i<entries.length; i++ ) {
+				//Title
+				var Titre = data.feed.entry[i].title["$t"];
+				//Video thumbnail 
+				var Pic = data.feed.entry[i].media$group.media$thumbnail[0].url;
+				// URL
+				var Url = data.feed.entry[i].link[0].href;
+				// duration
+				var Duration = data.feed.entry[i].media$group.media$content[0].duration;
+				var min=Math.floor( Duration / 60 );
+				var sec =Math.floor( Duration % 60 );
+				// date publication
+				var Dte = data.feed.entry[i].published.$t;
+				var s=Dte.split("T");
+				var Dt=s[0].split("-");
+				// Vues 
+				var Vues = data.feed.entry[i].yt$statistics.viewCount;
+
+				$('#container').append('<div class="span4"><H2>'+Titre+'</H2><p><a href="'+Url+'" ><img src="'+Pic+'" class="img-responsive"></a><a href="'+Url+'" class="btn btn-info btn-large">Visioner la video</a></p><p>publie le : ' + Dt[2]+'/'+Dt[1]+'/'+Dt[0]+' | Durée : '+min+':'+sec+' | Vues : '+Vues+' </p></div>');
+			}
+
+		    
+		}
+    	    });            
+    });
+    </script>
+  </body>
+</html>
